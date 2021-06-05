@@ -5,6 +5,8 @@ import pandas as pd
 from keras.models import Sequential
 from keras import layers
 import matplotlib.pyplot as plt
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 
 filepath_dict = {
 	'yelp': 'data/yelp_labelled.txt',
@@ -77,7 +79,29 @@ def plot_history(history):
     plt.title('Training and validation loss')
     plt.savefig("img.png")
 
-plot_history(history)
+tokenizer = Tokenizer(num_words=5000)
+tokenizer.fit_on_texts(sentences_train)
+
+# X_train = tokenizer.texts_to_sequences(sentences_train)
+# X_test = tokenizer.texts_to_sequences(sentences_test)
+
+# vocab_size = len(tokenizer.word_index) + 1 # adding 1 because of reserved 0 index
+
+# print(sentences_train[2])
+# print(X_train[2])
+# for word in ['the', 'all', 'happy', 'sad']:
+#     print('{}: {}'.format(word, tokenizer.word_index[word]))
+
+maxlen = 100
+
+X_train = pad_sequences(X_train, padding='post', maxlen=maxlen)
+X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
+
+print(X_train[0, :])
+
+
+
+# plot_history(history)
 
 # print("Accuracy:", score)
 # for source in df['source'].unique():
